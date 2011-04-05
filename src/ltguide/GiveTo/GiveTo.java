@@ -1,7 +1,6 @@
 package ltguide.GiveTo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -24,29 +23,24 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 
 public class GiveTo extends JavaPlugin {
 	private final Logger log = Logger.getLogger("Minecraft");
-	private String pdfName;
 	public Configuration config;
 	private PermissionHandler Permissions;
-	private HashMap<String, String> itemsList = new HashMap<String, String>();
 	
-	public void onDisable() {
-		config = null;
-		itemsList.clear();
-	}
+	public void onDisable() {}
 	
 	public void onEnable() {
-		pdfName = "[" + getDescription().getName() + "] ";
-		reload();
-		log.info(pdfName + "v" + getDescription().getVersion() + " enabled");
+		sendMsg(null, false, "v" + getDescription().getVersion() + " enabled (loaded items: " + reload() + ")");
 	}
 	
 	private void sendMsg(CommandSender sender, Boolean console, String msg) {
-		if (sender instanceof Player) ((Player) sender).sendMessage(msg);
-		else log.info(ChatColor.stripColor(msg));
-		if (console && sender instanceof Player) log.info(pdfName + "->" + ((Player) sender).getName() + " " + ChatColor.stripColor(msg));
+		if (sender instanceof Player) {
+			((Player) sender).sendMessage(msg);
+			if (console) log.info("[" + getDescription().getName() + "] ->" + ((Player) sender).getName() + " " + ChatColor.stripColor(msg));
+		}
+		else log.info("[" + getDescription().getName() + "] " + ChatColor.stripColor(msg));
 	}
 	
-	private void reload() {
+	private Integer reload() {
 		if (config == null) config = getConfiguration();
 		else config.load();
 		
@@ -82,7 +76,7 @@ public class GiveTo extends JavaPlugin {
 			config.setProperty("items.kit", item);
 		}
 		
-		if (!config.save()) log.warning(pdfName + "error saving config file");
+		if (!config.save()) sendMsg(null, false, "error saving config file");
 		
 		Pattern pattern = Pattern.compile("[0-9]+(?::[0-9]+)?");
 		Matcher m;
@@ -97,10 +91,12 @@ public class GiveTo extends JavaPlugin {
 			}
 			
 			if (discard) {
-				log.warning(pdfName + "error in " + name + "; skipping");
+				sendMsg(null, false, "error in " + name + "; skipping");
 				config.removeProperty("items." + name);
 			}
 		}
+		
+		return config.getKeys("items").size();
 	}
 	
 	public Boolean hasPermission(CommandSender sender, String node) {
@@ -130,10 +126,7 @@ public class GiveTo extends JavaPlugin {
 			sendMsg(args.From, false, ChatColor.GRAY + "Usage: /" + config.getString("command." + args.Command) + (args.Command == "others" ? " <player|me>" : "") + " <itemid|itemname> [count]");
 			if (hasPermission(args.From, "giveto.reload")) sendMsg(args.From, false, ChatColor.GRAY + "Usage: /" + config.getString("command." + args.Command) + " reload");
 		}
-		else if (args.State == "reload") {
-			reload();
-			sendMsg(args.From, true, ChatColor.GREEN + "Reloaded items.");
-		}
+		else if (args.State == "reload") sendMsg(args.From, true, ChatColor.GREEN + "Reloaded items (" + reload() + ").");
 		else if (args.State == "nouser") sendMsg(args.From, false, ChatColor.RED + "Unable to find target user.");
 		else if (args.State == "console") sendMsg(args.From, false, ChatColor.RED + "This functionality does not work from the console.");
 		else {
@@ -206,7 +199,7 @@ public class GiveTo extends JavaPlugin {
 		
 		PlayerInventory inventory = ((Player) args.To).getInventory();
 		ItemStack itemstack = new ItemStack(0);
-		itemstack.setAmount(args.Count); //override inCount
+		itemstack.setAmount(args.Count);
 		for (String item : items) {
 			String[] parts = pattern.split(item);
 			if (parts.length == 2) itemstack.setDurability(Short.parseShort(parts[1]));
