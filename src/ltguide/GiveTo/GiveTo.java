@@ -123,12 +123,13 @@ public class GiveTo extends JavaPlugin {
 	private Boolean processArgs(GiveToArgs args) {
 		if (args.State == "permission") sendMsg(args.From, false, ChatColor.RED + "You do not have permission.");
 		else if (args.State == "noargs") {
-			sendMsg(args.From, false, ChatColor.GRAY + "Usage: /" + config.getString("command." + args.Command) + (args.Command == "others" ? " <player|me>" : "") + " <itemid|itemname> [count]");
-			if (hasPermission(args.From, "giveto.reload")) sendMsg(args.From, false, ChatColor.GRAY + "Usage: /" + config.getString("command." + args.Command) + " reload");
+			sendMsg(args.From, false, "Usage: /" + config.getString("command." + args.Command) + (args.Command == "others" ? " <player|me>" : "") + " <itemid|itemname> [count]");
+			if (hasPermission(args.From, "giveto.reload")) sendMsg(args.From, false, "Usage: /" + config.getString("command." + args.Command) + " reload");
 		}
 		else if (args.State == "reload") sendMsg(args.From, true, ChatColor.GREEN + "Reloaded items (" + reload() + ").");
-		else if (args.State == "nouser") sendMsg(args.From, false, ChatColor.RED + "Unable to find target user.");
-		else if (args.State == "console") sendMsg(args.From, false, ChatColor.RED + "This functionality does not work from the console.");
+		else if (args.State == "notarget") sendMsg(args.From, false, ChatColor.RED + "Unable to find target user.");
+		else if (args.State == "badtarget") sendMsg(args.From, false, ChatColor.RED + "Too many matching target users.");
+		else if (args.State == "console") sendMsg(args.From, false, "This functionality does not work from the console.");
 		else {
 			for (String name : config.getKeys("items")) {
 				if (name.equalsIgnoreCase(args.Item) || config.getString("items." + name + ".alias", "").equalsIgnoreCase(args.Item) || config.getProperty("items." + name + ".id").equals(args.Item)) {
@@ -139,7 +140,7 @@ public class GiveTo extends JavaPlugin {
 			
 			Pattern pattern;
 			try {
-				pattern = Pattern.compile(".*" + args.Item.replaceAll("[* ]", ".*") + ".*", Pattern.CASE_INSENSITIVE);
+				pattern = Pattern.compile(".*" + args.Item.replaceAll("\\*", ".*").replaceAll(" ", ".* .*") + ".*", Pattern.CASE_INSENSITIVE);
 			}
 			catch (PatternSyntaxException e) {
 				sendMsg(args.From, true, ChatColor.RED + "Search term invalid (" + args.Item + ").");
@@ -161,7 +162,7 @@ public class GiveTo extends JavaPlugin {
 			}
 			
 			if (matches == "") sendMsg(args.From, false, ChatColor.RED + "No matching items.");
-			else if (matches.contains(",")) sendMsg(args.From, false, ChatColor.DARK_PURPLE + "Matching results: " + matches);
+			else if (matches.contains(",")) sendMsg(args.From, false, ChatColor.DARK_PURPLE + "Matching results: " + ChatColor.WHITE + matches);
 			else giveItem(args, matches);
 		}
 		

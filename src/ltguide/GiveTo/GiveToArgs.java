@@ -1,5 +1,9 @@
 package ltguide.GiveTo;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -34,7 +38,28 @@ public class GiveToArgs {
 				for (Player player : parent.getServer().getOnlinePlayers()) {
 					if (args[0].equalsIgnoreCase(player.getName())) To = player;
 				}
-				if (To == null) State = "nouser";
+				
+				if (To == null) {
+					Pattern pattern;
+					Matcher m;
+					try {
+						pattern = Pattern.compile(".*" + args[0] + ".*", Pattern.CASE_INSENSITIVE);
+						
+						for (Player player : parent.getServer().getOnlinePlayers()) {
+							m = pattern.matcher(player.getName());
+							if (m.matches()) {
+								if (To != null) {
+									State = "badtarget";
+									break;
+								}
+								To = player;
+							}
+						}
+					}
+					catch (PatternSyntaxException e) {}
+				}
+				
+				if (To == null) State = "notarget";
 			}
 			
 			if (State != null) return;
