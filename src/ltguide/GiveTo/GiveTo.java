@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -45,8 +47,6 @@ public class GiveTo extends JavaPlugin {
 		else config.load();
 		
 		Hashtable<String, Object> defaults = new Hashtable<String, Object>();
-		defaults.put("command.self", "gme");
-		defaults.put("command.others", "gto");
 		defaults.put("count.max", 512);
 		defaults.put("count.def", 64);
 		
@@ -106,7 +106,7 @@ public class GiveTo extends JavaPlugin {
 		if (Permissions != null) return Permissions.has(player, node);
 		else {
 			Plugin test = getServer().getPluginManager().getPlugin("Permissions");
-			if (test != null) {
+			if (test != null && test.isEnabled()) {
 				Permissions = ((Permissions) test).getHandler();
 				return Permissions.has(player, node);
 			}
@@ -114,36 +114,32 @@ public class GiveTo extends JavaPlugin {
 		return player.isOp();
 	}
 	
-	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		if (command.getName().equalsIgnoreCase(config.getString("command.self"))) return processArgs(new GiveToArgs(this, sender, "self", args));
-		if (command.getName().equalsIgnoreCase(config.getString("command.others"))) return processArgs(new GiveToArgs(this, sender, "others", args));
-		return false;
-	}
-	
-	private Boolean processArgs(GiveToArgs args) {
-		if (args.State == "permission") sendMsg(args.From, false, ChatColor.RED + "You do not have permission.");
-		else if (args.State == "noargs") {
-			sendMsg(args.From, false, "Usage: /" + config.getString("command." + args.Command) + (args.Command == "others" ? " <player|me>" : "") + " <itemid|itemname> [count]");
-			if (hasPermission(args.From, "giveto.reload")) sendMsg(args.From, false, "Usage: /" + config.getString("command." + args.Command) + " reload");
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		GiveToArgs GTArgs = new GiveToArgs(this, sender, command.getName(), args);
+		
+		if (GTArgs.State == "permission") sendMsg(GTArgs.From, false, ChatColor.RED + "You do not have permission.");
+		else if (GTArgs.State == "noargs") {
+			if (hasPermission(GTArgs.From, "giveto.reload")) sendMsg(GTArgs.From, false, "You can also use \"reload\" to reload the item list.");
+			return false;
 		}
-		else if (args.State == "reload") sendMsg(args.From, true, ChatColor.GREEN + "Reloaded items (" + reload() + ").");
-		else if (args.State == "notarget") sendMsg(args.From, false, ChatColor.RED + "Unable to find target user.");
-		else if (args.State == "badtarget") sendMsg(args.From, false, ChatColor.RED + "Too many matching target users.");
-		else if (args.State == "console") sendMsg(args.From, false, "This functionality does not work from the console.");
+		else if (GTArgs.State == "reload") sendMsg(GTArgs.From, true, ChatColor.GREEN + "Reloaded items (" + reload() + ").");
+		else if (GTArgs.State == "notarget") sendMsg(GTArgs.From, false, ChatColor.RED + "Unable to find target user.");
+		else if (GTArgs.State == "badtarget") sendMsg(GTArgs.From, false, ChatColor.RED + "Too many matching users.");
+		else if (GTArgs.State == "console") sendMsg(GTArgs.From, false, "This functionality does not work from the console.");
 		else {
 			for (String name : config.getKeys("items")) {
-				if (name.equalsIgnoreCase(args.Item) || config.getString("items." + name + ".alias", "").equalsIgnoreCase(args.Item) || config.getProperty("items." + name + ".id").equals(args.Item)) {
-					giveItem(args, name);
+				if (name.equalsIgnoreCase(GTArgs.Item) || config.getString("items." + name + ".alias", "").equalsIgnoreCase(GTArgs.Item) || config.getProperty("items." + name + ".id").equals(GTArgs.Item)) {
+					giveItem(GTArgs, name);
 					return true;
 				}
 			}
 			
 			Pattern pattern;
 			try {
-				pattern = Pattern.compile(".*" + args.Item.replaceAll("\\*", ".*").replaceAll(" ", ".* .*") + ".*", Pattern.CASE_INSENSITIVE);
+				pattern = Pattern.compile(".*" + GTArgs.Item.replaceAll("\\*", ".*").replaceAll(" ", ".* .*") + ".*", Pattern.CASE_INSENSITIVE);
 			}
 			catch (PatternSyntaxException e) {
-				sendMsg(args.From, true, ChatColor.RED + "Search term invalid (" + args.Item + ").");
+				sendMsg(GTArgs.From, true, ChatColor.RED + "Search term invalid (" + GTArgs.Item + ").");
 				return true;
 			}
 			
@@ -161,9 +157,9 @@ public class GiveTo extends JavaPlugin {
 				}
 			}
 			
-			if (matches == "") sendMsg(args.From, false, ChatColor.RED + "No matching items.");
-			else if (matches.contains(",")) sendMsg(args.From, false, ChatColor.DARK_PURPLE + "Matching results: " + ChatColor.WHITE + matches);
-			else giveItem(args, matches);
+			if (matches == "") sendMsg(GTArgs.From, false, ChatColor.RED + "No matching items.");
+			else if (matches.contains(",")) sendMsg(GTArgs.From, false, ChatColor.DARK_PURPLE + "Matching results: " + ChatColor.WHITE + matches);
+			else giveItem(GTArgs, matches);
 		}
 		
 		return true;
@@ -198,14 +194,14 @@ public class GiveTo extends JavaPlugin {
 		List<String> items = getItems(inName);
 		Pattern pattern = Pattern.compile(":");
 		
+		Boolean fullInventory = false;
 		PlayerInventory inventory = ((Player) args.To).getInventory();
-		ItemStack itemstack = new ItemStack(0);
-		itemstack.setAmount(args.Count);
+		
 		for (String item : items) {
 			String[] parts = pattern.split(item);
-			if (parts.length == 2) itemstack.setDurability(Short.parseShort(parts[1]));
-			itemstack.setTypeId(Integer.parseInt(parts[0]));
-			inventory.addItem(itemstack);
+			if (!inventory.addItem(new ItemStack(Integer.parseInt(parts[0]), args.Count, parts.length == 2 ? Short.parseShort(parts[1]) : 0)).isEmpty()) fullInventory = true;
 		}
+		
+		if (fullInventory) sendMsg(args.To, false, ChatColor.RED + "Your inventory is full.");
 	}
 }

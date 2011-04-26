@@ -1,8 +1,6 @@
 package ltguide.GiveTo;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
+import java.util.List;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,17 +10,16 @@ public class GiveToArgs {
 	public CommandSender To;
 	public String Item;
 	public Integer Count;
-	public String Command;
 	public String State;
 	
-	public GiveToArgs(GiveTo parent, CommandSender From, String Command, String[] args) {
+	public GiveToArgs(GiveTo plugin, CommandSender From, String Command, String[] args) {
 		this.From = From;
-		this.Command = Command;
+		Command = Command.equals("giveme") ? "self" : "others";
 		
-		if (!parent.hasPermission(From, "giveto." + Command)) State = "permission";
+		if (!plugin.hasPermission(From, "giveto." + Command)) State = "permission";
 		else if (args.length == 0) State = "noargs";
 		else if (args[0].equalsIgnoreCase("reload")) {
-			if (parent.hasPermission(From, "giveto.reload")) State = "reload";
+			if (plugin.hasPermission(From, "giveto.reload")) State = "reload";
 			else State = "permission";
 		}
 		else {
@@ -35,34 +32,14 @@ public class GiveToArgs {
 			}
 			else if (args[0].equalsIgnoreCase("me")) To = From;
 			else {
-				for (Player player : parent.getServer().getOnlinePlayers()) {
-					if (args[0].equalsIgnoreCase(player.getName())) To = player;
-				}
+				List<Player> matches = plugin.getServer().matchPlayer(args[0]);
 				
-				if (To == null) {
-					Pattern pattern;
-					Matcher m;
-					try {
-						pattern = Pattern.compile(".*" + args[0] + ".*", Pattern.CASE_INSENSITIVE);
-						
-						for (Player player : parent.getServer().getOnlinePlayers()) {
-							m = pattern.matcher(player.getName());
-							if (m.matches()) {
-								if (To != null) {
-									State = "badtarget";
-									break;
-								}
-								To = player;
-							}
-						}
-					}
-					catch (PatternSyntaxException e) {}
-				}
+				if (matches.size() == 0) State = "notarget";
+				else if (matches.size() > 1) State = "badtarget";
+				else To = matches.get(0);
 				
-				if (To == null) State = "notarget";
+				if (State != null) return;
 			}
-			
-			if (State != null) return;
 			
 			if (!(To instanceof Player)) State = "console";
 			else if (firstArg > lastArg) State = "noargs";

@@ -1,10 +1,14 @@
 name: GiveTo
 main: ltguide.GiveTo.GiveTo
-version: 0.3
+version: 0.4
+author: ltguide
+description: Give Items
 commands:
-  gme:
-    description: Give Items
-    usage: /gme
-  gto:
-    description: Give Items
-    usage: /gto
+  giveme:
+    description: Give Items to Self
+    aliases: gme
+    usage: /<command> <item> [count]
+  giveto:
+    description: Give Items to Others
+    aliases: [gto,give]
+    usage: /<command> <player> <item> [count]

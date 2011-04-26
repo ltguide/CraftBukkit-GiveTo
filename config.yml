@@ -1,0 +1,527 @@
+count:
+    max: 512
+    def: 64
+items:
+    kit:
+        def: 1
+        max: 1
+        permission: beginnerset
+        id:
+        - '276'
+        - '277'
+        - '278'
+        - '279'
+        - '259'
+        - '288'
+    Stone:
+        id: '1'
+    Grass:
+        id: '2'
+    Dirt:
+        id: '3'
+    Cobblestone:
+        id: '4'
+    Wooden Plank:
+        id: '5'
+    Sapling:
+        id: '6'
+    Spruce Sapling:
+        id: '6:1'
+    Birch Sapling:
+        id: '6:2'
+    Bedrock:
+        id: '7'
+    Water:
+        id: '8'
+    Stationary Water:
+        alias: Source Water
+        id: '9'
+    Lava:
+        id: '10'
+    Stationary Lava:
+        alias: Source Lava
+        id: '11'
+    Sand:
+        id: '12'
+    Gravel:
+        id: '13'
+    Gold Ore:
+        id: '14'
+    Iron Ore:
+        id: '15'
+    Coal Ore:
+        id: '16'
+    Wood:
+        id: '17'
+    Spruce Wood:
+        id: '17:1'
+    Birch Wood:
+        id: '17:2'
+    Sponge:
+        id: '19'
+    Glass:
+        id: '20'
+    Lapis Lazuli Ore:
+        id: '21'
+    Lapis Lazuli Block:
+        id: '22'
+    Dispenser:
+        id: '23'
+    Sandstone:
+        id: '24'
+    Note Block:
+        id: '25'
+    Powered Rail:
+        id: '27'
+    Detector Rail:
+        id: '28'
+    Web:
+        id: '30'
+    Wool:
+        id: '35'
+    White Wool:
+        id: '35:0'
+    Orange Wool:
+        id: '35:1'
+    Magenta Wool:
+        id: '35:2'
+    Light Blue Wool:
+        id: '35:3'
+    Yellow Wool:
+        id: '35:4'
+    Light Green Wool:
+        id: '35:5'
+    Pink Wool:
+        id: '35:6'
+    Gray Wool:
+        id: '35:7'
+    Light Gray Wool:
+        id: '35:8'
+    Cyan Wool:
+        id: '35:9'
+    Purple Wool:
+        id: '35:10'
+    Blue Wool:
+        id: '35:11'
+    Brown Wool:
+        id: '35:12'
+    Dark Green Wool:
+        id: '35:13'
+    Red Wool:
+        id: '35:14'
+    Black Wool:
+        id: '35:15'
+    Yellow Flower:
+        id: '37'
+    Red Rose:
+        id: '38'
+    Brown Mushroom:
+        id: '39'
+    Red Mushroom:
+        id: '40'
+    Gold Block:
+        id: '41'
+    Iron Block:
+        id: '42'
+    Stone Double Slab:
+        id: '43'
+    Sandstone Double Slab:
+        id: '43:1'
+    Wooden Double Slab:
+        id: '43:2'
+    Cobblestone Double Slab:
+        id: '43:3'
+    Stone Slab:
+        id: '44'
+    Sandstone Slab:
+        id: '44:1'
+    Wooden Slab:
+        id: '44:2'
+    Cobblestone Slab:
+        id: '44:3'
+    Brick Block:
+        id: '45'
+    TNT:
+        id: '46'
+    Bookshelf:
+        id: '47'
+    Moss Stone:
+        id: '48'
+    Obsidian:
+        id: '49'
+    Torch:
+        id: '50'
+    Fire:
+        id: '51'
+    Monster Spawner:
+        id: '52'
+    Wooden Stairs:
+        id: '53'
+    Chest:
+        id: '54'
+    Diamond Ore:
+        id: '56'
+    Diamond Block:
+        id: '57'
+    Crafting Table:
+        alias: Workbench
+        id: '58'
+    Crops:
+        id: '59'
+    Farmland:
+        alias: Soil
+        id: '60'
+    Furnace:
+        id: '61'
+    Burning Furnace:
+        alias: Lit Furnace
+        id: '62'
+    Wooden Door:
+        id: '324'
+    Ladder:
+        id: '65'
+    Rails:
+        alias: Minecart Track
+        id: '66'
+    Cobblestone Stairs:
+        id: '67'
+    Lever:
+        alias: Switch
+        id: '69'
+    Stone Pressure Plate:
+        id: '70'
+    Iron Door:
+        id: '71'
+    Wooden Pressure Plate:
+        id: '72'
+    Redstone Ore:
+        id: '73'
+    Glowing Redstone Ore:
+        id: '74'
+    Redstone Torch:
+        id: '76'
+    Stone Button:
+        id: '77'
+    Snow:
+        id: '78'
+    Ice:
+        id: '79'
+    Snow Block:
+        id: '80'
+    Cactus:
+        id: '81'
+    Clay Block:
+        id: '82'
+    Sugar Cane:
+        id: '338'
+    Jukebox:
+        id: '84'
+    Fence:
+        id: '85'
+    Pumpkin:
+        id: '86'
+    Netherrack:
+        alias: Netherstone
+        id: '87'
+    Soul Sand:
+        id: '88'
+    Glowstone Block:
+        alias: Lightstone
+        id: '89'
+    Portal:
+        id: '90'
+    Jack-O-Lantern:
+        id: '91'
+    Cake Block:
+        id: '92'
+    Iron Shovel:
+        def: 1
+        id: '256'
+    Iron Pickaxe:
+        def: 1
+        id: '257'
+    Iron Axe:
+        def: 1
+        id: '258'
+    Flint and Steel:
+        def: 1
+        id: '259'
+    Apple:
+        id: '260'
+    Bow:
+        id: '261'
+    Arrow:
+        id: '262'
+    Coal:
+        id: '263'
+    Charcoal:
+        id: '263:1'
+    Diamond:
+        id: '264'
+    Iron Ingot:
+        id: '265'
+    Gold Ingot:
+        id: '266'
+    Iron Sword:
+        id: '267'
+    Wooden Sword:
+        def: 1
+        id: '268'
+    Wooden Shovel:
+        def: 1
+        id: '269'
+    Wooden Pickaxe:
+        def: 1
+        id: '270'
+    Wooden Axe:
+        def: 1
+        id: '271'
+    Stone Sword:
+        def: 1
+        id: '272'
+    Stone Shovel:
+        def: 1
+        id: '273'
+    Stone Pickaxe:
+        def: 1
+        id: '274'
+    Stone Axe:
+        def: 1
+        id: '275'
+    Diamond Sword:
+        def: 1
+        id: '276'
+    Diamond Shovel:
+        def: 1
+        id: '277'
+    Diamond Pickaxe:
+        def: 1
+        id: '278'
+    Diamond Axe:
+        def: 1
+        id: '279'
+    Stick:
+        id: '280'
+    Bowl:
+        id: '281'
+    Mushroom Soup:
+        id: '282'
+    Gold Sword:
+        def: 1
+        id: '283'
+    Gold Shovel:
+        def: 1
+        id: '284'
+    Gold Pickaxe:
+        def: 1
+        id: '285'
+    Gold Axe:
+        def: 1
+        id: '286'
+    String:
+        id: '287'
+    Feather:
+        id: '288'
+    Gunpowder:
+        id: '289'
+    Wooden Hoe:
+        def: 1
+        id: '290'
+    Stone Hoe:
+        def: 1
+        id: '291'
+    Iron Hoe:
+        def: 1
+        id: '292'
+    Diamond Hoe:
+        def: 1
+        id: '293'
+    Gold Hoe:
+        def: 1
+        id: '294'
+    Seeds:
+        id: '295'
+    Wheat:
+        id: '296'
+    Bread:
+        id: '297'
+    Leather Helmet:
+        def: 1
+        id: '298'
+    Leather Chestplate:
+        def: 1
+        id: '299'
+    Leather Leggings:
+        def: 1
+        id: '300'
+    Leather Boots:
+        def: 1
+        id: '301'
+    Chainmail Helmet:
+        def: 1
+        id: '302'
+    Chainmail Chestplate:
+        def: 1
+        id: '303'
+    Chainmail Leggings:
+        def: 1
+        id: '304'
+    Chainmail Boots:
+        def: 1
+        id: '305'
+    Iron Helmet:
+        def: 1
+        id: '306'
+    Iron Chestplate:
+        def: 1
+        id: '307'
+    Iron Leggings:
+        def: 1
+        id: '308'
+    Iron Boots:
+        def: 1
+        id: '309'
+    Diamond Helmet:
+        def: 1
+        id: '310'
+    Diamond Chestplate:
+        def: 1
+        id: '311'
+    Diamond Leggings:
+        def: 1
+        id: '312'
+    Diamond Boots:
+        def: 1
+        id: '313'
+    Gold Helmet:
+        def: 1
+        id: '314'
+    Gold Chestplate:
+        def: 1
+        id: '315'
+    Gold Leggings:
+        def: 1
+        id: '316'
+    Gold Boots:
+        def: 1
+        id: '317'
+    Flint:
+        id: '318'
+    Raw Porkchop:
+        id: '319'
+    Cooked Porkchop:
+        id: '320'
+    Paintings:
+        id: '321'
+    Golden Apple:
+        id: '322'
+    Sign:
+        id: '323'
+    Bucket:
+        id: '325'
+    Water bucket:
+        id: '326'
+    Lava bucket:
+        id: '327'
+    Minecart:
+        id: '328'
+    Saddle:
+        id: '329'
+    Iron door:
+        id: '330'
+    Redstone:
+        id: '331'
+    Snowball:
+        id: '332'
+    Boat:
+        id: '333'
+    Leather:
+        id: '334'
+    Milk:
+        id: '335'
+    Clay Brick:
+        id: '336'
+    Clay Balls:
+        id: '337'
+    Paper:
+        id: '339'
+    Book:
+        id: '340'
+    Slimeball:
+        id: '341'
+    Storage Minecart:
+        id: '342'
+    Powered Minecart:
+        id: '343'
+    Egg:
+        id: '344'
+    Compass:
+        id: '345'
+    Fishing Rod:
+        id: '346'
+    Clock:
+        alias: Watch
+        id: '347'
+    Glowstone Dust:
+        id: '348'
+    Raw Fish:
+        id: '349'
+    Cooked Fish:
+        id: '350'
+    Ink Sac:
+        alias: Black Dye
+        id: '351'
+    Rose Red:
+        id: '351:1'
+        alias: Red Dye
+    Cactus Green:
+        alias: Green Dye
+        id: '351:2'
+    Cocoa Beans:
+        alias: Brown Dye
+        id: '351:3'
+    Lapis Lazuli:
+        alias: Blue Dye
+        id: '351:4'
+    Purple Dye:
+        id: '351:5'
+    Cyan Dye:
+        id: '351:6'
+    Light Gray Dye:
+        id: '351:7'
+    Gray Dye:
+        id: '351:8'
+    Pink Dye:
+        id: '351:9'
+    Lime Dye:
+        id: '351:10'
+    Dandelion Yellow:
+        alias: Yellow Dye
+        id: '351:11'
+    Light Blue Dye:
+        id: '351:12'
+    Magenta Dye:
+        id: '351:13'
+    Orange Dye:
+        id: '351:14'
+    Bone Meal:
+        alias: White Dye
+        id: '351:15'
+    Bone:
+        id: '352'
+    Sugar:
+        id: '353'
+    Cake:
+        id: '354'
+    Bed:
+        id: '355'
+    Redstone Repeater:
+        id: '356'
+    Cookie:
+        id: '357'
+    Gold Music Disc:
+        alias: Gold Record
+        id: '2256'
+    Green Music Disc:
+        alias: Green Record
+        id: '2257'
