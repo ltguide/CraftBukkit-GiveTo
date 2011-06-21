@@ -1,11 +1,14 @@
 count:
     max: 512
     def: 64
+delay: 0
+cost: 0
 items:
     kit:
         def: 1
         max: 1
         permission: beginnerset
+        delay: 600
         id:
         - '276'
         - '277'
@@ -176,8 +179,6 @@ items:
     Burning Furnace:
         alias: Lit Furnace
         id: '62'
-    Wooden Door:
-        id: '324'
     Ladder:
         id: '65'
     Rails:
@@ -190,8 +191,6 @@ items:
         id: '69'
     Stone Pressure Plate:
         id: '70'
-    Iron Door:
-        id: '71'
     Wooden Pressure Plate:
         id: '72'
     Redstone Ore:
@@ -234,6 +233,8 @@ items:
         id: '91'
     Cake Block:
         id: '92'
+    Trapdoor:
+        id: '96'
     Iron Shovel:
         def: 1
         id: '256'
@@ -417,6 +418,8 @@ items:
         id: '322'
     Sign:
         id: '323'
+    Wooden Door:
+        id: '324'
     Bucket:
         id: '325'
     Water bucket:
@@ -468,9 +471,11 @@ items:
         id: '349'
     Cooked Fish:
         id: '350'
+    Dye:
+        id: '351'
     Ink Sac:
         alias: Black Dye
-        id: '351'
+        id: '351:0'
     Rose Red:
         id: '351:1'
         alias: Red Dye
@@ -519,6 +524,9 @@ items:
         id: '356'
     Cookie:
         id: '357'
+    Map:
+        id: '358'
+        def: 1
     Gold Music Disc:
         alias: Gold Record
         id: '2256'
