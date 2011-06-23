@@ -109,26 +109,37 @@ public class GiveTo extends JavaPlugin {
 		if (config == null) config = getConfiguration();
 		else config.load();
 		
-		List<String> items = config.getKeys("items");
-		if (items == null || items.size() == 0) {
+		boolean saveConfig = false;
+		for (CommandMessage message : CommandMessage.values()) {
+			String key = "messages." + message.name().toLowerCase();
+			String value = config.getString(key);
+			if (value == null) {
+				config.setProperty(key, message.toString());
+				saveConfig = true;
+			}
+			else message.setMessage(value);
+		}
+		if (saveConfig && !config.save()) sendLog("error saving config file");
+		
+		Map<String, ConfigurationNode> nodes = config.getNodes("items");
+		if (nodes == null || nodes.size() == 0) {
 			sendLog("unable to find any items in config.yml; copying default from .jar");
 			
-			if (writeResource("/resources/config.yml", new File(getDataFolder(), "config.yml"))) config.load();
+			if (writeResource("/resources/config.yml", new File(getDataFolder(), "config.yml"))) {
+				config.load();
+				nodes = config.getNodes("items");
+			}
 		}
 		
-		if (config.getDouble("cost", -1) > 0) checkMethod = true;
-		
 		Pattern pattern = Pattern.compile("\\d+(?::\\d+)?");
-		Map<String, ConfigurationNode> nodes = config.getNodes("items");
 		for (Map.Entry<String, ConfigurationNode> entry : nodes.entrySet()) {
 			ConfigurationNode node = entry.getValue();
 			Boolean discard = false;
 			List<String> ids = getStringAsList(node, "id");
 			
 			if (ids.size() == 0) discard = true;
-			else for (String id : ids) {
+			else for (String id : ids)
 				if (!pattern.matcher(id).matches()) discard = true;
-			}
 			
 			if (node.getDouble("cost", -1) > 0) checkMethod = true;
 			
@@ -137,6 +148,8 @@ public class GiveTo extends JavaPlugin {
 				config.removeProperty("items." + entry.getKey());
 			}
 		}
+		
+		if (config.getDouble("cost", -1) > 0) checkMethod = true;
 		
 		if (checkMethod) {
 			try {
@@ -187,12 +200,15 @@ public class GiveTo extends JavaPlugin {
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		try {
-			if (!hasPermission(sender, "giveto." + (command.getName().equalsIgnoreCase("giveme") ? "self" : "others"))) throw new CommandException(CommandState.PERMISSION);
-			if (args.length == 0) throw new CommandException(CommandState.ARGLENGTH);
+			if (!hasPermission(sender, "giveto." + (command.getName().equalsIgnoreCase("giveme") ? "self" : "others"))) throw new CommandException(CommandMessage.PERMISSION);
+			if (args.length == 0) {
+				if (hasPermission(sender, "giveto.reload")) sendMsg(sender, CommandMessage.RELOADABLE.toString(label));
+				throw new CommandException(CommandMessage.ARGLENGTH, command.getUsage().replace("<command>", label));
+			}
 			
 			if (args[0].equalsIgnoreCase("reload")) {
-				if (!hasPermission(sender, "giveto.reload")) throw new CommandException(CommandState.PERMISSION);
-				sendMsg(sender, ChatColor.GREEN + "Reloaded items (" + reload() + ").", true);
+				if (!hasPermission(sender, "giveto.reload")) throw new CommandException(CommandMessage.PERMISSION);
+				sendMsg(sender, CommandMessage.RELOADDONE.toString(reload()), true);
 				return true;
 			}
 			
@@ -205,28 +221,24 @@ public class GiveTo extends JavaPlugin {
 			else if (!args[0].equalsIgnoreCase("me")) {
 				List<Player> matches = getServer().matchPlayer(args[0]);
 				
-				if (matches.size() == 0) throw new CommandException(CommandState.NOTARGET);
-				if (matches.size() > 1) throw new CommandException(CommandState.TOOMANYTARGET, joinAsString(matches));
+				if (matches.size() == 0) throw new CommandException(CommandMessage.NOTARGET);
+				if (matches.size() > 1) throw new CommandException(CommandMessage.TOOMANYTARGET, joinAsString(matches));
 				to = matches.get(0);
 			}
 			
-			if (!(to instanceof Player)) throw new CommandException(CommandState.CONSOLE);
-			if (firstArg > lastArg) throw new CommandException(CommandState.ARGLENGTH);
+			if (!(to instanceof Player)) throw new CommandException(CommandMessage.CONSOLE);
+			if (firstArg > lastArg) throw new CommandException(CommandMessage.ARGLENGTH, command.getUsage().replace("<command>", label));
 			
 			if (firstArg < lastArg && args[lastArg].matches("[1-9](?:[0-9]+)?")) {
 				count = Integer.parseInt(args[lastArg]);
 				lastArg--;
 			}
 			
-			Item item = findItem(joinAsString(args, " ", firstArg, lastArg + 1).toLowerCase());
+			Item item = findItem(joinAsString(args, " ", firstArg, lastArg + 1).trim().toLowerCase());
 			processItem(sender, count, item);
 			giveItem(sender, (Player) to, item);
 		}
 		catch (CommandException e) {
-			if (e.getMessage().length() == 0) {
-				if (hasPermission(sender, "giveto.reload")) sendMsg(sender, "You can also use \"reload\" to reload the item list.");
-				return false;
-			}
 			sendMsg(sender, e.getMessage());
 		}
 		
@@ -248,7 +260,7 @@ public class GiveTo extends JavaPlugin {
 			pattern = Pattern.compile(".*" + text.replaceAll("\\*", ".*").replaceAll(" ", ".* .*") + ".*", Pattern.CASE_INSENSITIVE);
 		}
 		catch (PatternSyntaxException e) {
-			throw new CommandException(CommandState.BADSEARCH);
+			throw new CommandException(CommandMessage.BADSEARCH);
 		}
 		
 		boolean isId = text.matches("\\d+");
@@ -276,8 +288,8 @@ public class GiveTo extends JavaPlugin {
 			}
 		}
 		
-		if (matches.size() == 0) throw new CommandException(CommandState.NOMATCHES);
-		if (matches.size() > 1) throw new CommandException(CommandState.TOOMANYMATCHES, Item.join(matches));
+		if (matches.size() == 0) throw new CommandException(CommandMessage.NOMATCHES);
+		if (matches.size() > 1) throw new CommandException(CommandMessage.TOOMANYMATCHES, Item.join(matches));
 		
 		Item item = matches.iterator().next();
 		return isId ? item : checkBetterMatch(item);
@@ -304,7 +316,7 @@ public class GiveTo extends JavaPlugin {
 		if (!(from instanceof Player)) return;
 		
 		String permission = node.getString("permission");
-		if (permission != null && !hasPermission(from, "giveto.item." + permission)) throw new CommandException(CommandState.PERMISSION);
+		if (permission != null && !hasPermission(from, "giveto.item." + permission)) throw new CommandException(CommandMessage.PERMISSION);
 		
 		String fromName = ((Player) from).getName();
 		double cost = 0;
@@ -316,10 +328,10 @@ public class GiveTo extends JavaPlugin {
 			cost *= item.count;
 			
 			if (cost > 0 && hasMethod()) {
-				if (!Method.hasAccount(fromName)) throw new CommandException(CommandState.NOACCOUNT);
+				if (!Method.hasAccount(fromName)) throw new CommandException(CommandMessage.NOACCOUNT);
 				account = Method.getAccount(fromName);
-				if (!account.hasEnough(cost)) throw new CommandException(CommandState.NOMONEY, Method.format(cost), Method.format(cost - account.balance()));
-				item.costMsg = " (-" + Method.format(cost) + "; balance is now " + Method.format(account.balance()) + ")";
+				if (!account.hasEnough(cost)) throw new CommandException(CommandMessage.NOMONEY, Method.format(cost), Method.format(cost - account.balance()));
+				item.costMsg = CommandMessage.SUBTRACTMONEY.toString(Method.format(cost), Method.format(account.balance()));
 			}
 			else cost = 0;
 		}
@@ -333,7 +345,7 @@ public class GiveTo extends JavaPlugin {
 			if (delay > 0) {
 				String key = fromName + type;
 				int time = (int) (System.currentTimeMillis() / 1000);
-				if (delayPlayers.containsKey(key) && delayPlayers.get(key) > time) throw new CommandException(CommandState.DELAY, secondsToTime(delayPlayers.get(key) - time), type.equals("") ? "another item" : item.name + " again");
+				if (delayPlayers.containsKey(key) && delayPlayers.get(key) > time) throw new CommandException(CommandMessage.DELAY, secondsToTime(delayPlayers.get(key) - time), type.equals("") ? "another item" : item.name + " again");
 				delayPlayers.put(key, time + delay);
 			}
 		}
@@ -359,10 +371,10 @@ public class GiveTo extends JavaPlugin {
 	
 	private void giveItem(CommandSender from, Player to, Item item) throws CommandException {
 		if (to != from && from instanceof Player) {
-			sendMsg(to, ChatColor.GREEN + ((Player) from).getName() + " is placing '" + item.name + "' in your inventory.", true);
-			sendMsg(from, ChatColor.GREEN + "Placing '" + item.name + "' in " + to.getName() + "'s inventory." + item.costMsg, true);
+			sendMsg(to, CommandMessage.GIVEFROM.toString(((Player) from).getName(), item.name), true);
+			sendMsg(from, CommandMessage.GIVETO.toString(item.name, to.getName() + "'s", item.costMsg), true);
 		}
-		else sendMsg(to, ChatColor.GREEN + "Placing '" + item.name + "' in your inventory." + item.costMsg, true);
+		else sendMsg(to, CommandMessage.GIVETO.toString(item.name, "your", item.costMsg), true);
 		
 		Boolean fullInventory = false;
 		PlayerInventory inventory = to.getInventory();
@@ -373,7 +385,7 @@ public class GiveTo extends JavaPlugin {
 			fullInventory = !inventory.addItem(new ItemStack(Integer.parseInt(parts[0]), item.count, parts.length == 2 ? Short.parseShort(parts[1]) : item.durability)).isEmpty();
 		}
 		
-		if (fullInventory) sendMsg(to, ChatColor.RED + "Your inventory is full.");
+		if (fullInventory) sendMsg(to, CommandMessage.INVENTORYFULL.toString());
 	}
 	
 	private String joinAsString(List<Player> players) {
