@@ -1,6 +1,6 @@
 name: GiveTo
 main: ltguide.giveto.GiveTo
-version: 0.6
+version: 0.61
 author: ltguide
 description: Give Items
 commands:

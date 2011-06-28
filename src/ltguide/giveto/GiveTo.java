@@ -298,8 +298,9 @@ public class GiveTo extends JavaPlugin {
 	private Item checkBetterMatch(Item item) {
 		if (item.durability > -1 && item.ids.size() == 1) {
 			try {
-				Matcher m = Pattern.compile("(.+):\\d+").matcher(item.ids.get(0));
-				return findItem((m.matches() ? m.group(1) : item) + ":" + item.durability);
+				Matcher m = Pattern.compile("(\\d+)(?::\\d+)?").matcher(item.ids.get(0));
+				m.matches();
+				return findItem(m.group(1) + ":" + item.durability);
 			}
 			catch (CommandException e) {}
 		}
@@ -379,6 +380,8 @@ public class GiveTo extends JavaPlugin {
 		Boolean fullInventory = false;
 		PlayerInventory inventory = to.getInventory();
 		Pattern pattern = Pattern.compile(":");
+		
+		if (item.durability < 0) item.durability = 0;
 		
 		for (String id : item.ids) {
 			String[] parts = pattern.split(id);
