@@ -114,7 +114,7 @@ public class GiveTo extends JavaPlugin {
 			String key = "messages." + message.name().toLowerCase();
 			String value = config.getString(key);
 			if (value == null) {
-				config.setProperty(key, message.toString());
+				config.setProperty(key, message.getMessage());
 				saveConfig = true;
 			}
 			else message.setMessage(value);
