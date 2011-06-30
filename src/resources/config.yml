@@ -78,6 +78,8 @@ items:
         id: '17:1'
     Birch Wood:
         id: '17:2'
+    Leaves:
+        id: '18'
     Sponge:
         id: '19'
     Glass:
@@ -96,8 +98,16 @@ items:
         id: '27'
     Detector Rail:
         id: '28'
+    Sticky Piston:
+        id: '29'
     Web:
         id: '30'
+    Tall Grass:
+        id: '31'
+    Dead Shrubs:
+        id: '32'
+    Piston:
+        id: '33'
     Wool:
         id: '35'
     White Wool:
@@ -545,6 +555,8 @@ items:
     Map:
         id: '358'
         def: 1
+    Shears:
+        id: '359'
     Gold Music Disc:
         alias: Gold Record
         id: '2256'
