@@ -332,7 +332,7 @@ public class GiveTo extends JavaPlugin {
 				if (!Method.hasAccount(fromName)) throw new CommandException(CommandMessage.NOACCOUNT);
 				account = Method.getAccount(fromName);
 				if (!account.hasEnough(cost)) throw new CommandException(CommandMessage.NOMONEY, Method.format(cost), Method.format(cost - account.balance()));
-				item.costMsg = CommandMessage.SUBTRACTMONEY.toString(Method.format(cost), Method.format(account.balance()));
+				item.costMsg = CommandMessage.SUBTRACTMONEY.toString(Method.format(cost), Method.format(account.balance() - cost));
 			}
 			else cost = 0;
 		}
@@ -370,7 +370,7 @@ public class GiveTo extends JavaPlugin {
 		return sb.toString();
 	}
 	
-	private void giveItem(CommandSender from, Player to, Item item) throws CommandException {
+	private void giveItem(CommandSender from, Player to, Item item) {
 		if (to != from && from instanceof Player) {
 			sendMsg(to, CommandMessage.GIVEFROM.toString(((Player) from).getName(), item.name), true);
 			sendMsg(from, CommandMessage.GIVETO.toString(item.name, to.getName() + "'s", item.costMsg), true);
@@ -388,7 +388,14 @@ public class GiveTo extends JavaPlugin {
 			fullInventory = !inventory.addItem(new ItemStack(Integer.parseInt(parts[0]), item.count, parts.length == 2 ? Short.parseShort(parts[1]) : item.durability)).isEmpty();
 		}
 		
+		updateInventory(to);
+		
 		if (fullInventory) sendMsg(to, CommandMessage.INVENTORYFULL.toString());
+	}
+	
+	@SuppressWarnings("deprecation") private void updateInventory(Player player) {
+		List<String> updateInventory = getStringAsList(config,"updateinventory");
+		if (updateInventory.contains("*") || updateInventory.contains(player.getName())) player.updateInventory();
 	}
 	
 	private String joinAsString(List<Player> players) {

@@ -3,6 +3,7 @@ count:
     def: 64
 delay: 0
 cost: 0
+updateinventory: []
 messages:
     arglength: '&5Syntax: &f%s'
     permission: '&cYou do not have permission.'
