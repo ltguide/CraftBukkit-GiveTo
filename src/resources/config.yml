@@ -35,8 +35,6 @@ items:
         - '279'
         - '259'
         - '288'
-    Air:
-        id: '0'
     Stone:
         id: '1'
     Grass:
