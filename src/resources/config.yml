@@ -35,6 +35,8 @@ items:
         - '279'
         - '259'
         - '288'
+    Air:
+        id: '0'
     Stone:
         id: '1'
     Grass:
@@ -102,13 +104,17 @@ items:
     Sticky Piston:
         id: '29'
     Web:
+        alias: Cobweb
         id: '30'
     Tall Grass:
         id: '31'
     Dead Shrubs:
+        alias: Dead Bush
         id: '32'
     Piston:
         id: '33'
+    Piston Extension:
+        id: '34'
     Wool:
         id: '35'
     White Wool:
@@ -144,8 +150,10 @@ items:
     Black Wool:
         id: '35:15'
     Yellow Flower:
+        alias: Dandelion
         id: '37'
     Red Rose:
+        alias: Red Flower
         id: '38'
     Brown Mushroom:
         id: '39'
@@ -191,6 +199,8 @@ items:
         id: '53'
     Chest:
         id: '54'
+    Redstone Wire:
+        id: '55'
     Diamond Ore:
         id: '56'
     Diamond Block:
@@ -262,8 +272,34 @@ items:
         id: '91'
     Cake Block:
         id: '92'
+    Locked Chest:
+        id: '95'
     Trapdoor:
         id: '96'
+    Stone Brick:
+        id: '98'
+    Huge Red Mushroom:
+        id: '99'
+    Huge Brown Mushroom:
+        id: '100'
+    Iron Bars:
+        id: '101'
+    Glass Pane:
+        id: '102'
+    Melon:
+        id: '103'
+    Pumpkin Stem:
+        id: '104'
+    Melon Stem:
+        id: '105'
+    Vines:
+        id: '106'
+    Fence Gate:
+        id: '107'
+    Brick Stairs:
+        id: '108'
+    Stone Brick Stairs:
+        id: '109'
     Iron Shovel:
         def: 1
         id: '256'
@@ -277,6 +313,7 @@ items:
         def: 1
         id: '259'
     Apple:
+        alias: Red Apple
         id: '260'
     Bow:
         id: '261'
@@ -388,15 +425,19 @@ items:
         def: 1
         id: '301'
     Chainmail Helmet:
+        alias: Chain Helmet
         def: 1
         id: '302'
     Chainmail Chestplate:
+        alias: Chain Chestplate
         def: 1
         id: '303'
     Chainmail Leggings:
+        alias: Chain Leggings
         def: 1
         id: '304'
     Chainmail Boots:
+        alias: Chain Boots
         def: 1
         id: '305'
     Iron Helmet:
@@ -442,6 +483,7 @@ items:
     Cooked Porkchop:
         id: '320'
     Paintings:
+        alias: Painting
         id: '321'
     Golden Apple:
         id: '322'
@@ -474,7 +516,10 @@ items:
     Clay Brick:
         id: '336'
     Clay Balls:
+        alias: Clay
         id: '337'
+    Sugar Cane:
+        id: '338'
     Paper:
         id: '339'
     Book:
@@ -506,8 +551,8 @@ items:
         alias: Black Dye
         id: '351:0'
     Rose Red:
-        id: '351:1'
         alias: Red Dye
+        id: '351:1'
     Cactus Green:
         alias: Green Dye
         id: '351:2'
@@ -558,6 +603,25 @@ items:
         def: 1
     Shears:
         id: '359'
+    Melon:
+        alias: Melon Slice
+        id: '360'
+    Pumpkin Seeds:
+        id: '361'
+    Melon Seeds:
+        id: '362'
+    Raw Beef:
+        id: '363'
+    Steak:
+        id: '364'
+    Raw Chicken:
+        id: '365'
+    Cooked Chicken:
+        id: '366'
+    Rotten Flesh:
+        id: '367'
+    Ender Pearl:
+        id: '368'
     Gold Music Disc:
         alias: Gold Record
         id: '2256'
