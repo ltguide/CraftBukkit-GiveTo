@@ -603,8 +603,7 @@ items:
         def: 1
     Shears:
         id: '359'
-    Melon:
-        alias: Melon Slice
+    Melon Slice:
         id: '360'
     Pumpkin Seeds:
         id: '361'
