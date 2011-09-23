@@ -1,5 +1,7 @@
 package ltguide.giveto;
 
+import ltguide.nijikokun.register.payment.Methods;
+
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.ServerListener;
 
@@ -12,8 +14,8 @@ class GiveToServerListener extends ServerListener {
 	
 	@Override
 	public void onPluginDisable(PluginDisableEvent event) {
-		if (plugin.Method != null && plugin.Method.getPlugin().equals(event.getPlugin())) {
-			plugin.Method = null;
+		if (Methods.hasMethod() && Methods.getMethod().getPlugin().equals(event.getPlugin())) {
+			Methods.reset();
 			plugin.checkMethod = true;
 		}
 		else if (plugin.Permissions != null && event.getPlugin().getDescription().getName().equalsIgnoreCase("Permissions")) {

@@ -1,8 +1,9 @@
 name: GiveTo
 main: ltguide.giveto.GiveTo
-version: 0.7
+version: 0.8
 author: ltguide
 description: Give Items
+softdepend: [iConomy, BOSEconomy, Currency, MultiCurrency]
 commands:
   giveme:
     description: Give Items to Self
@@ -12,3 +13,24 @@ commands:
     description: Give Items to Others
     aliases: [gto,give]
     usage: /<command> <player> <item> [count]
+permissions:
+    giveto.*:
+        description: Allows all command functionality
+        children:
+             giveto.self: true
+             giveto.others: true
+    giveto.self:
+        description: Allows you to give yourself items
+        default: op
+    giveto.others:
+        description: Allows you to give items to other players
+        default: op
+    giveto.reload:
+        description: Allows you to reload the config file
+        default: op
+    giveto.exempt.cost:
+        description: Allows you to give items for free
+        default: false
+    giveto.exempt.delay:
+        description: Allows you to give items with no delays
+        default: op

@@ -101,14 +101,16 @@ items:
         id: '28'
     Sticky Piston:
         id: '29'
-    Web:
+    Cobweb:
         id: '30'
     Tall Grass:
         id: '31'
-    Dead Shrubs:
+    Dead Bush:
         id: '32'
     Piston:
         id: '33'
+    Piston Extension:
+        id: '34'
     Wool:
         id: '35'
     White Wool:
@@ -143,9 +145,11 @@ items:
         id: '35:14'
     Black Wool:
         id: '35:15'
-    Yellow Flower:
+    Dandelion:
+        alias: Yellow Flower
         id: '37'
-    Red Rose:
+    Rose:
+        alias: Red Flower
         id: '38'
     Brown Mushroom:
         id: '39'
@@ -211,7 +215,7 @@ items:
     Ladder:
         id: '65'
     Rails:
-        alias: Minecart Track
+        alias: Track
         id: '66'
     Cobblestone Stairs:
         id: '67'
@@ -240,8 +244,6 @@ items:
         id: '81'
     Clay Block:
         id: '82'
-    Sugar Cane:
-        id: '338'
     Jukebox:
         id: '84'
     Fence:
@@ -262,8 +264,48 @@ items:
         id: '91'
     Cake Block:
         id: '92'
+    Locked Chest:
+        id: '95'
     Trapdoor:
         id: '96'
+    Hidden Silverfish:
+        id: '97'
+    Stone Bricks:
+        id: '98'
+    Huge Brown Mushroom:
+        id: '99'
+    Huge Red Mushroom:
+        id: '100'
+    Iron Bars:
+        id: '101'
+    Glass Pane:
+        id: '102'
+    Melon:
+        id: '103'
+    Pumpkin Stem:
+        id: '104'
+    Melon Stem:
+        id: '105'
+    Vines:
+        id: '106'
+    Fence Gate:
+        id: '107'
+    Brick Stairs:
+        id: '108'
+    Stone Brick Stairs:
+        id: '109'
+    Mycelium:
+        id: '110'
+    Lily Pad:
+        id: '111'
+    Nether Brick:
+        id: '112'
+    Nether Brick Fence:
+        id: '113'
+    Nether Brick Stairs:
+        id: '114'
+    Nether Wart:
+        id: '115'
     Iron Shovel:
         def: 1
         id: '256'
@@ -276,7 +318,7 @@ items:
     Flint and Steel:
         def: 1
         id: '259'
-    Apple:
+    Red Apple:
         id: '260'
     Bow:
         id: '261'
@@ -387,16 +429,16 @@ items:
     Leather Boots:
         def: 1
         id: '301'
-    Chainmail Helmet:
+    Chain Helmet:
         def: 1
         id: '302'
-    Chainmail Chestplate:
+    Chain Chestplate:
         def: 1
         id: '303'
-    Chainmail Leggings:
+    Chain Leggings:
         def: 1
         id: '304'
-    Chainmail Boots:
+    Chain Boots:
         def: 1
         id: '305'
     Iron Helmet:
@@ -473,8 +515,11 @@ items:
         id: '335'
     Clay Brick:
         id: '336'
-    Clay Balls:
+    Clay:
+        alias: Clay Balls
         id: '337'
+    Sugar Cane:
+        id: '338'
     Paper:
         id: '339'
     Book:
@@ -506,8 +551,8 @@ items:
         alias: Black Dye
         id: '351:0'
     Rose Red:
-        id: '351:1'
         alias: Red Dye
+        id: '351:1'
     Cactus Green:
         alias: Green Dye
         id: '351:2'
@@ -558,6 +603,30 @@ items:
         def: 1
     Shears:
         id: '359'
+    Melon Slice:
+        id: '360'
+    Pumpkin Seeds:
+        id: '361'
+    Melon Seeds:
+        id: '362'
+    Raw Beef:
+        id: '363'
+    Steak:
+        id: '364'
+    Raw Chicken:
+        id: '365'
+    Cooked Chicken:
+        id: '366'
+    Rotten Flesh:
+        id: '367'
+    Ender Pearl:
+        id: '368'
+    Blaze Rod:
+        id: '369'
+    Ghast Tear:
+        id: '370'
+    Gold Nugget:
+        id: '371'
     Gold Music Disc:
         alias: Gold Record
         id: '2256'

@@ -17,6 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import ltguide.nijikokun.register.payment.Method;
+import ltguide.nijikokun.register.payment.Method.MethodAccount;
+import ltguide.nijikokun.register.payment.Methods;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,16 +29,16 @@ import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 import org.bukkit.util.config.ConfigurationNode;
 
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
-import com.nijikokun.register.payment.Method;
-import com.nijikokun.register.payment.Method.MethodAccount;
-import com.nijikokun.register.payment.Methods;
 
 public class GiveTo extends JavaPlugin {
 	private final Logger log = Logger.getLogger("Minecraft");
@@ -43,11 +47,11 @@ public class GiveTo extends JavaPlugin {
 	
 	public PermissionHandler Permissions;
 	public boolean checkPermissions;
-	public Method Method;
 	public boolean checkMethod;
 	
 	public void onDisable() {
 		delayPlayers.clear();
+		Methods.reset();
 	}
 	
 	public void onEnable() {
@@ -103,7 +107,6 @@ public class GiveTo extends JavaPlugin {
 	private int reload() {
 		Permissions = null;
 		checkPermissions = true;
-		Method = null;
 		checkMethod = false;
 		
 		if (config == null) config = getConfiguration();
@@ -131,6 +134,7 @@ public class GiveTo extends JavaPlugin {
 			}
 		}
 		
+		PluginManager pluginManager = getServer().getPluginManager();
 		Pattern pattern = Pattern.compile("\\d+(?::\\d+)?");
 		for (Map.Entry<String, ConfigurationNode> entry : nodes.entrySet()) {
 			ConfigurationNode node = entry.getValue();
@@ -143,6 +147,12 @@ public class GiveTo extends JavaPlugin {
 			
 			if (node.getDouble("cost", -1) > 0) checkMethod = true;
 			
+			String permission = node.getString("permission");
+			if (permission != null) try {
+				pluginManager.addPermission(new Permission("giveto.item." + permission, "Allow you to use the item: " + entry.getKey(), PermissionDefault.OP));
+			}
+			catch (IllegalArgumentException ex) {}
+			
 			if (discard) {
 				sendLog("error in item " + entry.getKey() + "; skipping");
 				config.removeProperty("items." + entry.getKey());
@@ -150,17 +160,6 @@ public class GiveTo extends JavaPlugin {
 		}
 		
 		if (config.getDouble("cost", -1) > 0) checkMethod = true;
-		
-		if (checkMethod) {
-			try {
-				Class.forName("com.nijikokun.register.payment.Method");
-			}
-			catch (ClassNotFoundException e) {
-				checkMethod = false;
-				sendLog("cost associated with items; copying Registry library from .jar");
-				if (writeResource("/resources/Register.jar", new File("lib", "Register.jar"))) sendLog("must RELOAD server to load Registry library (items will be FREE)");
-			}
-		}
 		
 		return config.getKeys("items").size();
 	}
@@ -174,28 +173,28 @@ public class GiveTo extends JavaPlugin {
 			Plugin plugin = getServer().getPluginManager().getPlugin("Permissions");
 			if (plugin != null && plugin.isEnabled()) Permissions = ((Permissions) plugin).getHandler();
 			
-			if (Permissions == null) sendLog("no compatible permissions plugin found, so defaulting to OPs only");
+			if (Permissions == null) sendLog("no Permissions-like plugin found, so using Bukkit Permissions");
 		}
 		
 		if (Permissions != null) return Permissions.has(player, node);
-		return player.isOp();
+		return player.hasPermission(node);
 	}
 	
 	public boolean hasMethod() {
-		if (Method == null && checkMethod) {
+		if (!Methods.hasMethod() && checkMethod) {
 			checkMethod = false;
-			Methods Methods = new Methods();
-			Plugin[] plugins = getServer().getPluginManager().getPlugins();
-			for (Plugin plugin : plugins)
-				if (plugin.isEnabled() && Methods.setMethod(plugin)) {
-					Method = Methods.getMethod();
-					break;
-				}
 			
-			if (Method == null) sendLog("cost associated with items; no compatible ecomony plugin found, so items are FREE");
+			Configuration bukkitConfig = new Configuration(new File("bukkit.yml"));
+			bukkitConfig.load();
+			
+			Methods.setPreferred(bukkitConfig.getString("economy.preferred"));
+			Methods.setMethod(getServer().getPluginManager());
+			
+			if (!Methods.hasMethod()) sendLog("cost associated with items; no compatible ecomony plugin found, so items are FREE");
+			else sendLog("found payment method: " + Methods.getMethod().getName() + " v" + Methods.getMethod().getVersion());
 		}
 		
-		return Method != null;
+		return Methods.hasMethod();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -329,10 +328,11 @@ public class GiveTo extends JavaPlugin {
 			cost *= item.count;
 			
 			if (cost > 0 && hasMethod()) {
-				if (!Method.hasAccount(fromName)) throw new CommandException(CommandMessage.NOACCOUNT);
-				account = Method.getAccount(fromName);
-				if (!account.hasEnough(cost)) throw new CommandException(CommandMessage.NOMONEY, Method.format(cost), Method.format(cost - account.balance()));
-				item.costMsg = CommandMessage.SUBTRACTMONEY.toString(Method.format(cost), Method.format(account.balance() - cost));
+				Method method = Methods.getMethod();
+				if (!method.hasAccount(fromName)) throw new CommandException(CommandMessage.NOACCOUNT);
+				account = method.getAccount(fromName);
+				if (!account.hasEnough(cost)) throw new CommandException(CommandMessage.NOMONEY, method.format(cost), method.format(cost - account.balance()));
+				item.costMsg = CommandMessage.SUBTRACTMONEY.toString(method.format(cost), method.format(account.balance() - cost));
 			}
 			else cost = 0;
 		}
@@ -393,8 +393,9 @@ public class GiveTo extends JavaPlugin {
 		if (fullInventory) sendMsg(to, CommandMessage.INVENTORYFULL.toString());
 	}
 	
-	@SuppressWarnings("deprecation") private void updateInventory(Player player) {
-		List<String> updateInventory = getStringAsList(config,"updateinventory");
+	@SuppressWarnings("deprecation")
+	private void updateInventory(Player player) {
+		List<String> updateInventory = getStringAsList(config, "updateinventory");
 		if (updateInventory.contains("*") || updateInventory.contains(player.getName())) player.updateInventory();
 	}
 	
